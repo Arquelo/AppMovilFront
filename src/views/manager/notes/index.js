@@ -69,7 +69,7 @@ const MyDataTable = () => {
     };
 
     return (
-        <div className="background">
+        <div className="d-flex flex-column align-items-center justify-content-start w-100 vh-100 background text-center">
             <div className="container mt-4">
                 <h2 className="text-white">Lista de Notas</h2>
                 <ReturnMenuComponent />

@@ -1,26 +1,40 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import DataTable from "react-data-table-component";
-import apiPokemon from "../../../services/api";
 import ReturnMenuComponent from "../../../components/ReturnMenuComponent";
 
 const MyDataTable = () => {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true);
-    
-    const fetchData = () => {
-        apiPokemon.get()
-            .then((response) => {
-                setData(response.data.data);
-                setLoading(false);
-            })
-            .catch((error) => {
-                console.error("Error al obtener datos:", error);
-                setLoading(false);
-            });
+    const [error, setError] = useState(null); // Para manejar errores
+
+    const fetchData = async () => {  // Usando async/await
+        try {
+            const response = await fetch("https://pokeapi.co/api/v2/pokemon?limit=100"); // Petición a la API de Pokémon (limit=100 para traer 100 pokemones)
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`); // Manejo de errores de la API
+            }
+            const pokemonData = await response.json();
+
+            // Formatear los datos para la DataTable
+            const formattedData = pokemonData.results.map((pokemon, index) => ({
+                id: index + 1, // Puedes usar el índice como ID o buscar una forma más robusta si la API lo proporciona
+                name: pokemon.name,
+                url: pokemon.url, // Guardamos la URL para detalles
+                image: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${index + 1}.png` // Ejemplo de imagen, ajusta según la API
+            }));
+
+            setData(formattedData);
+            setLoading(false);
+        } catch (error) {
+            console.error("Error fetching data:", error);
+            setError("Error al cargar los datos. Inténtalo de nuevo más tarde."); // Mensaje de error al usuario
+            setLoading(false);
+        }
     };
 
-    useEffect(() => { fetchData(); }, []);
+    useEffect(() => {
+        fetchData();
+    }, []);
 
     const columns = [
         {
@@ -30,21 +44,23 @@ const MyDataTable = () => {
         },
         {
             name: "Nombre",
-            selector: (row) => row.type,
+            selector: (row) => row.name,
             sortable: true,
         },
         {
-            ignoreRowClick: true,
-            allowOverflow: true,
-            button: true,
+            name: "Imagen", // Nueva columna para la imagen
+            cell: (row) => (
+                <img src={row.image} alt={row.name} width="250" /> // Ajusta el ancho según necesites
+            ),
         },
     ];
 
     return (
-        <div className="background">
-            <div className="container mt-4">
+        <div className="d-flex flex-column align-items-center justify-content-start w-100 background text-center">
+            <div className="container mt-4 ">
                 <h2 className="text-white">Pokedex</h2>
                 <ReturnMenuComponent />
+                {error && <p style={{ color: "red" }}>{error}</p>} {/* Mostrar mensaje de error */}
                 <DataTable
                     columns={columns}
                     data={data}

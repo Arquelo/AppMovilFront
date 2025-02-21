@@ -44,12 +44,21 @@ const MyDataTable = () => {
         {
             name: "ID",
             selector: (row) => row.id,
-            sortable: true,
+            sortable: true, width: '25%',
         },
         {
-            name: "Nombre",
-            selector: (row) => row.type,
+            name: "Grupo",
+            selector: (row) => row.title,
+            sortable: true, width: '25%',
+        },
+        {
+            name: "Color",
+            selector: (row) => row.color,
             sortable: true,
+            cell: (row) => (
+                <div style={{ backgroundColor: row.color, width: '100%', height: '20px', borderRadius: '20px' }}></div>
+            ),
+            width: '25%',
         },
         {
             name: "Acciones",
@@ -60,14 +69,14 @@ const MyDataTable = () => {
             ),
             ignoreRowClick: true,
             allowOverflow: true,
-            button: true,
+            button: true, width: '25%',
         },
     ];
 
     const handleCreateTypeBtn = () => { navigate("/group/create"); };
 
     return (
-        <div className="background">
+        <div className="d-flex flex-column align-items-center justify-content-start w-100 vh-100 background text-center">
             <div className="container mt-4">
                 <h2 className="text-white">Lista de Grupos</h2>
                 <ReturnMenuComponent />
