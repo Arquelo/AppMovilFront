@@ -12,6 +12,7 @@ import GroupIndex from "../views/manager/groups/index";
 import NoteCreate from "../views/manager/notes/create";
 import NoteEdit from "../views/manager/notes/edit";
 import NoteIndex from "../views/manager/notes/index";
+import PokemonIndex from "../views/manager/pokemons/index";
 
 const AppRoutes = () => {
   return (
@@ -29,6 +30,7 @@ const AppRoutes = () => {
         <Route path="/note/create" element={<NoteCreate />} />
         <Route path="/note/edit" element={<NoteEdit />} />
         <Route path="/note/index" element={<NoteIndex />} />
+        <Route path="/pokemon/index" element={<PokemonIndex /> } />
       </Routes>
     </Router>
   );

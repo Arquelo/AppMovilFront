@@ -2,12 +2,28 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/general.css";
 import logo from "../images/logo.jpg";
+import { auth, provider } from "../firebaseConfig";
+import { signInWithPopup } from "firebase/auth";
+import api from "../services/api";
 
 const Login = () => {
   const navigate = useNavigate();
 
-  const handleLogin = () => {
-    navigate("/inicio");
+  const handleLogin = () => { navigate("/inicio"); };
+
+  const handleGoogleLogin = async () => {
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const token = await result.user.getIdToken();
+      console.log("Token de Firebase:", token);
+      const { data } = await api.post("/login-google", { token });
+
+      localStorage.setItem("authToken", data.authToken);
+      navigate("/inicio");
+
+    } catch (error) {
+      console.error("Error en la autenticación:", error);
+    }
   };
 
   return (
@@ -20,6 +36,9 @@ const Login = () => {
           <input type="password" placeholder="Contraseña" className="form-control mb-3" />
           <button onClick={handleLogin} className="btn btn-success px-4 py-2">
             Ingresar
+          </button>
+          <button onClick={handleGoogleLogin} className="btn btn-danger px-4 py-2 mt-2">
+            Iniciar sesión con Google
           </button>
         </div>
       </div>

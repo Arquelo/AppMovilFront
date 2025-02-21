@@ -8,6 +8,7 @@ const Dashboard = () => {
     const handleIndexType = () => { navigate("/type/index"); };
     const handleIndexGroup = () => { navigate("/group/index"); };
     const handleIndexNote = () => { navigate("/note/index"); };
+    const handleViewPokemons = () => { navigate("/pokemon/index"); };
 
     return (
         <div className="d-flex flex-column align-items-center justify-content-start w-100 vh-100 background text-center">
@@ -20,6 +21,9 @@ const Dashboard = () => {
             </button>
             <button onClick={handleIndexType} className="btn btn-success px-4 py-2 w-25">
                 Administar Tipos
+            </button>
+            <button onClick={handleViewPokemons} className="btn btn-success px-4 py-2 w-25">
+                Ver Pokemones
             </button>
             <ReturnMenuComponent />
         </div>
