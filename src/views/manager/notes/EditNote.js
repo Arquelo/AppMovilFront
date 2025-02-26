@@ -1,5 +1,5 @@
 import React from 'react';
-import './EditNote.css'; // Importa el archivo de estilos
+// import '../components/EditNote.css'; 
 
 function EditNote() {
   return (

@@ -2,8 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import ReturnMenuComponent from "../../components/ReturnMenuComponent";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAnchorCircleCheck } from "@fortawesome/free-solid-svg-icons";
-
+import { faPaw , faNoteSticky, faUsers, faListUl } from "@fortawesome/free-solid-svg-icons"; 
 
 const Dashboard = () => {
     const navigate = useNavigate();
@@ -19,25 +18,25 @@ const Dashboard = () => {
                     <h1 class="text-white mt-2">Administrador</h1>
                 <div className="col-md-3 col-3 col-sm-12 mt-3">
                     <button onClick={handleIndexNote} className="btn btn-success w-100">
-                        <FontAwesomeIcon icon={faAnchorCircleCheck} className="fa-3x mb-3 mt-3" />
+                        <FontAwesomeIcon icon={faNoteSticky} className="fa-3x mb-3 mt-3" />
                         <p>Administar Notas</p>
                     </button>
                 </div>
                 <div className="col-md-3 col-3 col-sm-12 mt-3">
                     <button onClick={handleIndexGroup} className="btn btn-success w-100">
-                        <FontAwesomeIcon icon={faAnchorCircleCheck} className="fa-3x mb-3 mt-3" />
+                        <FontAwesomeIcon icon={faUsers} className="fa-3x mb-3 mt-3" />
                         <p>Administar Grupos</p>
                     </button>
                 </div>
                 <div className="col-md-3 col-3 col-sm-12 mt-3">
                     <button onClick={handleIndexType} className="btn btn-success w-100">
-                        <FontAwesomeIcon icon={faAnchorCircleCheck} className="fa-3x mb-3 mt-3" />
+                        <FontAwesomeIcon icon={faListUl} className="fa-3x mb-3 mt-3" />
                         <p>Administar Tipos</p>
                     </button>
                 </div>
                 <div className="col-md-3 col-3 col-sm-12 mt-3">
                     <button onClick={handleViewPokemons} className="btn btn-success w-100 mb-3">
-                        <FontAwesomeIcon icon={faAnchorCircleCheck} className="fa-3x mb-3 mt-3" />
+                        <FontAwesomeIcon icon={faPaw} className="fa-3x mb-3 mt-3" />
                         <p>Ver Pokemones</p>
                     </button>
                 </div>

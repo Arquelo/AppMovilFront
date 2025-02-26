@@ -64,18 +64,62 @@ const MyDataTable = () => {
         },
     ];
 
-    const handleCreateTypeBtn = () => {
-        navigate("/type/create");
+    const customStyles = {
+        tableWrapper: {
+            style: {
+                borderRadius: "10px 10px 0px 0px",
+                overflow: "hidden",
+            },
+        },
+        headCells: {
+            style: {
+                backgroundColor: "#001b80",
+                color: "white",
+                fontWeight: "bold",
+                fontSize: "16px",
+                textAlign: "center",
+            },
+        },
+        rows: {
+            style: {
+                "&:nth-of-type(odd)": {
+                    backgroundColor: "#cce5ff",
+                },
+                "&:nth-of-type(even)": {
+                    backgroundColor: "#99c2ff",
+                },
+            },
+        },
+        pagination: {
+            style: {
+                backgroundColor: "#001b80",
+                color: "white",
+                fontWeight: "bold",
+                borderBottomLeftRadius: "10px",
+                borderBottomRightRadius: "10px",
+            },
+        },
     };
+
+    const paginationOptions = {
+        rowsPerPageText: "Filas por página",
+        rangeSeparatorText: "de",
+        selectAllRowsItem: true,
+        selectAllRowsItemText: "Todos",
+    };
+
+    const handleCreateTypeBtn = () => { navigate("/type/create"); };
 
     return (
         <div className="d-flex flex-column align-items-center justify-content-start w-100 vh-100 background text-center">
             <div className="container mt-4">
                 <h2 className="text-white">Lista de Tipos</h2>
-                <ReturnMenuComponent />
-                <button onClick={handleCreateTypeBtn} className="btn btn-success me-2">
-                    Crear Tipo
-                </button>
+                <div className="mb-3 mt-3">
+                    <ReturnMenuComponent />
+                    <button onClick={handleCreateTypeBtn} className="btn btn-success ms-2 me-2">
+                        Crear Tipo
+                    </button>
+                </div>
                 <DataTable
                     columns={columns}
                     data={data}
@@ -83,6 +127,8 @@ const MyDataTable = () => {
                     pagination
                     highlightOnHover
                     striped
+                    paginationComponentOptions={paginationOptions}
+                    customStyles={customStyles}
                 />
             </div>
         </div>

@@ -12,7 +12,17 @@ const Dashboard = ({ onGroupAdded }) => {
         setLoading(true);
 
         try {
-            await api.post("/group", { title , color });
+            const sessionId = localStorage.getItem("sessionId"); 
+
+            await api.post(
+                "/group",
+                { title, color },
+                {
+                    headers: { "X-Session-ID": sessionId }, 
+                    withCredentials: true, 
+                }
+            );
+
             alert("Grupo creado correctamente");
 
             setTitle("");
@@ -32,7 +42,7 @@ const Dashboard = ({ onGroupAdded }) => {
     return (
         <div className="d-flex flex-column align-items-center justify-content-start w-100 vh-100 background text-center">
             <h1 className="text-white mt-2">Crear nuevo "Grupo"</h1>
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} className="w-50">
                 <div className="mb-3">
                     <label className="form-label text-white">Titulo</label>
                     <input
