@@ -37,7 +37,7 @@ const MyDataTable = () => {
 
     const handleDelete = (id) => {
         if (window.confirm("¿Estás seguro de eliminar este grupo?")) {
-            api.delete(`/groups/${id}`)
+            api.delete(`/group/${id}`)
                 .then(() => {
                     alert("Grupo eliminado correctamente");
                     fetchData();

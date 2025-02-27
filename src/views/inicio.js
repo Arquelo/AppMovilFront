@@ -2,26 +2,31 @@ import React, { useEffect, useState } from "react";
 import api from "../services/api";
 import DataTable from "react-data-table-component";
 import { useNavigate } from "react-router-dom";
+import { saveTableData, getTableData  } from "../services/indexedDB"
 
 const Dashboard = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const TABLE_NAME = "note"; 
 
   const navigate = useNavigate();
   const handlemenuManager = () => { navigate("/menuManager"); };
 
-
-  const fetchData = () => {
-    api.get("/note")
-      .then((response) => {
+  const fetchData = async () => {
+    try {
+        const response = await api.get(`/${TABLE_NAME}`); 
         setData(response.data.data);
+        saveTableData(TABLE_NAME, response.data.data); 
         setLoading(false);
-      })
-      .catch((error) => {
-        console.error("Error al obtener datos:", error);
+    } catch (error) {
+        console.error(`Error obteniendo ${TABLE_NAME}, cargando desde IndexedDB:`, error);
+        const cachedData = await getTableData(TABLE_NAME); 
+        if (cachedData) {
+            setData(cachedData);
+        }
         setLoading(false);
-      });
-  };
+    }
+};
 
   useEffect(() => {
     fetchData();
@@ -30,13 +35,12 @@ const Dashboard = () => {
   // Función para eliminar un tipo
   const handleDelete = (id) => {
     if (window.confirm("¿Estás seguro de eliminar este tipo?")) {
-      api.delete(`/note/${id}`)
+      api.post(`/note/completed/${id}`)
         .then(() => {
-          alert("Tipo eliminado correctamente");
           fetchData();
         })
         .catch((error) => {
-          console.error("Error al eliminar:", error);
+          console.error("Error:", error);
         });
     }
   };
@@ -86,17 +90,17 @@ const Dashboard = () => {
       sortable: true,
       width: '10%',
     },
-    {
-      name: "Acciones",
-      cell: (row) => (
-        <button className="btn btn-danger btn-sm" onClick={() => handleDelete(row.id)}>
-          Eliminar
-        </button>
-      ),
-      ignoreRowClick: true,
-      allowOverflow: true,
-      button: true,
-    },
+    // {
+    //   name: "Acciones",
+    //   cell: (row) => (
+    //     <button className="btn btn-success btn-sm" onClick={() => handleDelete(row.id)}>
+    //       Completar 
+    //     </button>
+    //   ),
+    //   ignoreRowClick: true,
+    //   allowOverflow: true,
+    //   button: true,
+    // },
   ];
 
   const customStyles = {

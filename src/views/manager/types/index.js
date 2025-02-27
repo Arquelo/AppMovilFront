@@ -2,24 +2,31 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import DataTable from "react-data-table-component";
 import api from "../../../services/api";
+import { saveTableData, getTableData  } from "../../../services/indexedDB"
 import ReturnMenuComponent from "../../../components/ReturnMenuComponent";
 
 const MyDataTable = () => {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true);
+    const TABLE_NAME = "type"; 
+
     const navigate = useNavigate();
 
     // Función para obtener los datos desde la API
-    const fetchData = () => {
-        api.get("/type")
-            .then((response) => {
-                setData(response.data.data);
-                setLoading(false);
-            })
-            .catch((error) => {
-                console.error("Error al obtener datos:", error);
-                setLoading(false);
-            });
+    const fetchData = async () => {
+        try {
+            const response = await api.get(`/${TABLE_NAME}`); 
+            setData(response.data.data);
+            saveTableData(TABLE_NAME, response.data.data); 
+            setLoading(false);
+        } catch (error) {
+            console.error(`Error obteniendo ${TABLE_NAME}, cargando desde IndexedDB:`, error);
+            const cachedData = await getTableData(TABLE_NAME); 
+            if (cachedData) {
+                setData(cachedData);
+            }
+            setLoading(false);
+        }
     };
 
     useEffect(() => {
