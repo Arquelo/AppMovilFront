@@ -6,33 +6,17 @@ const Dashboard = ({ onGroupAdded }) => {
     const [title, setTitle] = useState("");
     const [color, setColor] = useState("");
     const [loading, setLoading] = useState(false);
+    const sessionId = localStorage.getItem("sessionId");
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
-
         try {
-            const sessionId = localStorage.getItem("sessionId"); 
-
-            await api.post(
-                "/group",
-                { title, color },
-                {
-                    headers: { "X-Session-ID": sessionId }, 
-                    withCredentials: true, 
-                }
-            );
-
-            alert("Grupo creado correctamente");
-
+            await api.post("/group", { title, color }, { headers: { "X-Session-ID": sessionId }, });
             setTitle("");
             setColor("");
-
-            if (onGroupAdded) {
-                onGroupAdded();
-            }
+            if (onGroupAdded) { onGroupAdded(); }
         } catch (error) {
-            console.error("Error al guardar:", error);
             alert("Error al crear el grupo");
         } finally {
             setLoading(false);

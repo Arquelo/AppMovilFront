@@ -1,30 +1,37 @@
-import React, { useState } from "react";
-import api from "../../../services/api";
-import ReturnMenuComponent from "../../../components/ReturnMenuComponent";
+import React, { useState, useEffect } from "react";
+import { api, savePendingProcess, syncPendingProcesses, ReturnMenuComponent } from "../../../global";
 
 const Dashboard = ({ onTypeAdded }) => {
   const [type, setType] = useState("");
   const [loading, setLoading] = useState(false);
+  const sessionId = localStorage.getItem("sessionId");
+
+  useEffect(() => {
+    const syncOnReconnect = () => { syncPendingProcesses(api); };
+    window.addEventListener("online", syncOnReconnect);
+    return () => { window.removeEventListener("online", syncOnReconnect); };
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
-    try {
-      await api.post("/type", { type });
-      alert("Tipo creado correctamente");
+    if (navigator.onLine) {
+      try {
+        await api.post("/type", { type }, { headers: { "X-Session-ID": sessionId }, });
 
-      setType("");
-
-      if (onTypeAdded) {
-        onTypeAdded();
+        alert("Tipo creado correctamente");
+      } catch (error) {
+        console.error("Error al guardar:", error);
+        alert("Error al crear el tipo");
       }
-    } catch (error) {
-      console.error("Error al guardar:", error);
-      alert("Error al crear el tipo");
-    } finally {
-      setLoading(false);
+    } else {
+      await savePendingProcess("POST", "/type", { type });
     }
+
+    setType("");
+    if (onTypeAdded) { onTypeAdded(); }
+    setLoading(false);
   };
 
   return (

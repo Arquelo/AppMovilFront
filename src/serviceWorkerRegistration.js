@@ -13,7 +13,6 @@ const isLocalhost = Boolean(
         const swUrl = `${process.env.PUBLIC_URL}/service-worker.js`;
   
         if (isLocalhost) {
-          // Comprobamos si el service worker ya está registrado
           fetch(swUrl, { cache: 'no-store' })
             .then((response) => {
               if (

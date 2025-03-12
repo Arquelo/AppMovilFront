@@ -1,12 +1,10 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
-import ReturnMenuComponent from "../../components/ReturnMenuComponent";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaw , faNoteSticky, faUsers, faListUl } from "@fortawesome/free-solid-svg-icons"; 
+import {ReturnMenuComponent, useNavigate} from "../../global";
 
 const Dashboard = () => {
     const navigate = useNavigate();
-
     const handleIndexType = () => { navigate("/type/index"); };
     const handleIndexGroup = () => { navigate("/group/index"); };
     const handleIndexNote = () => { navigate("/note/index"); };

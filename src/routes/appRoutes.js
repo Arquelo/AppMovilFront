@@ -22,13 +22,13 @@ const AppRoutes = () => {
         <Route path="/inicio" element={<Inicio />} />
         <Route path="/menuManager" element={<MenuManager />} />
         <Route path="/type/create" element={<TypeCreate />} />
-        <Route path="/type/edit" element={<TypeEdit />} />
+        <Route path="/type/edit/:id" element={<TypeEdit />} />
         <Route path="/type/index" element={<TypeIndex />} />
         <Route path="/group/create" element={<GroupCreate />} />
-        <Route path="/group/edit" element={<GroupEdit />} />
+        <Route path="/group/edit/:id" element={<GroupEdit />} />
         <Route path="/group/index" element={<GroupIndex />} />
         <Route path="/note/create" element={<NoteCreate />} />
-        <Route path="/note/edit" element={<NoteEdit />} />
+        <Route path="/note/edit/:id" element={<NoteEdit />} />
         <Route path="/note/index" element={<NoteIndex />} />
         <Route path="/pokemon/index" element={<PokemonIndex /> } />
       </Routes>

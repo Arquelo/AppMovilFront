@@ -3,28 +3,50 @@ import { useNavigate } from "react-router-dom";
 import DataTable from "react-data-table-component";
 import api from "../../../services/api";
 import ReturnMenuComponent from "../../../components/ReturnMenuComponent";
+import { saveTableData, getTableData } from "../../../services/indexedDB";
 
 const MyDataTable = () => {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true);
+    const TABLE_NAME = "INDEX_NOTE";
     const navigate = useNavigate();
 
-    // Función para obtener los datos desde la API
-    const fetchData = () => {
-        api.get("/note")
-            .then((response) => {
-                setData(response.data.data);
-                setLoading(false);
-            })
-            .catch((error) => {
-                console.error("Error al obtener datos:", error);
-                setLoading(false);
-            });
+  // Obtener datos de la API o IndexedDB
+  const fetchData = async () => {
+    try {
+      const response = await api.get(`/note`);
+      if (response?.data?.data && Array.isArray(response.data.data)) {
+        setData(response.data.data);
+        await saveTableData(TABLE_NAME, response.data.data); 
+      } else {
+        throw new Error("Datos de API no válidos.");
+      }
+    } catch (error) {
+      console.error(`Error obteniendo ${TABLE_NAME}, cargando desde IndexedDB:`, error);
+      const cachedData = await getTableData(TABLE_NAME);
+      if (cachedData && Array.isArray(cachedData)) {
+        setData(cachedData);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Monitorear si hay conexión y actualizar datos cuando vuelva
+  useEffect(() => {
+    fetchData(); // Cargar datos al montar
+
+    const syncOnReconnect = () => {
+      console.log("🔄 Conexión restaurada, sincronizando...");
+      fetchData(); // Recargar datos desde la API
     };
 
-    useEffect(() => {
-        fetchData();
-    }, []);
+    window.addEventListener("online", syncOnReconnect);
+
+    return () => {
+      window.removeEventListener("online", syncOnReconnect);
+    };
+  }, []);
 
     // Función para eliminar un tipo
     const handleDelete = (id) => {

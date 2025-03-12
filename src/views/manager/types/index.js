@@ -1,39 +1,40 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import DataTable from "react-data-table-component";
-import api from "../../../services/api";
-import { saveTableData, getTableData  } from "../../../services/indexedDB"
-import ReturnMenuComponent from "../../../components/ReturnMenuComponent";
+import { faTrash, faEdit } from "@fortawesome/free-solid-svg-icons";
+import { api, saveTableData, getTableData, useNavigate, DataTable, customStyles, paginationOptions, ReturnMenuComponent, FontAwesomeIcon } from "../../../global";
 
 const MyDataTable = () => {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true);
-    const TABLE_NAME = "type"; 
-
+    const TABLE_NAME = "INDEX_TYPE";
     const navigate = useNavigate();
+    const handleCreateTypeBtn = () => { navigate("/type/create"); };
 
-    // Función para obtener los datos desde la API
     const fetchData = async () => {
         try {
-            const response = await api.get(`/${TABLE_NAME}`); 
-            setData(response.data.data);
-            saveTableData(TABLE_NAME, response.data.data); 
-            setLoading(false);
+            const response = await api.get(`/type`);
+            if (response?.data?.data && Array.isArray(response.data.data)) {
+                setData(response.data.data);
+                await saveTableData(TABLE_NAME, response.data.data);
+            } else {
+                throw new Error("Datos de API no válidos.");
+            }
         } catch (error) {
-            console.error(`Error obteniendo ${TABLE_NAME}, cargando desde IndexedDB:`, error);
-            const cachedData = await getTableData(TABLE_NAME); 
-            if (cachedData) {
+            const cachedData = await getTableData(TABLE_NAME);
+            if (cachedData && Array.isArray(cachedData)) {
                 setData(cachedData);
             }
+        } finally {
             setLoading(false);
         }
     };
 
     useEffect(() => {
         fetchData();
+        const syncOnReconnect = () => { fetchData(); };
+        window.addEventListener("online", syncOnReconnect);
+        return () => { window.removeEventListener("online", syncOnReconnect); };
     }, []);
 
-    // Función para eliminar un tipo
     const handleDelete = (id) => {
         if (window.confirm("¿Estás seguro de eliminar este tipo?")) {
             api.delete(`/type/${id}`)
@@ -48,74 +49,25 @@ const MyDataTable = () => {
     };
 
     const columns = [
-        {
-            name: "ID",
-            selector: (row) => row.id,
-            sortable: true,
-        },
-        {
-            name: "Nombre",
-            selector: (row) => row.type,
-            sortable: true,
-        },
+        { name: "ID", selector: (row) => row.id, sortable: true, },
+        { name: "Nombre", selector: (row) => row.type, sortable: true, },
         {
             name: "Acciones",
             cell: (row) => (
-                <button className="btn btn-danger btn-sm" onClick={() => handleDelete(row.id)}>
-                    Eliminar
-                </button>
+                <div className="d-flex">
+                    <button className="btn btn-primary btn-sm me-2" onClick={() => navigate(`/type/edit/${row.id}`)}>
+                        <FontAwesomeIcon icon={faEdit} />
+                    </button>
+                    <button className="btn btn-danger btn-sm" onClick={() => handleDelete(row.id)}>
+                        <FontAwesomeIcon icon={faTrash} />
+                    </button>
+                </div>
             ),
             ignoreRowClick: true,
             allowOverflow: true,
             button: true,
         },
     ];
-
-    const customStyles = {
-        tableWrapper: {
-            style: {
-                borderRadius: "10px 10px 0px 0px",
-                overflow: "hidden",
-            },
-        },
-        headCells: {
-            style: {
-                backgroundColor: "#001b80",
-                color: "white",
-                fontWeight: "bold",
-                fontSize: "16px",
-                textAlign: "center",
-            },
-        },
-        rows: {
-            style: {
-                "&:nth-of-type(odd)": {
-                    backgroundColor: "#cce5ff",
-                },
-                "&:nth-of-type(even)": {
-                    backgroundColor: "#99c2ff",
-                },
-            },
-        },
-        pagination: {
-            style: {
-                backgroundColor: "#001b80",
-                color: "white",
-                fontWeight: "bold",
-                borderBottomLeftRadius: "10px",
-                borderBottomRightRadius: "10px",
-            },
-        },
-    };
-
-    const paginationOptions = {
-        rowsPerPageText: "Filas por página",
-        rangeSeparatorText: "de",
-        selectAllRowsItem: true,
-        selectAllRowsItemText: "Todos",
-    };
-
-    const handleCreateTypeBtn = () => { navigate("/type/create"); };
 
     return (
         <div className="d-flex flex-column align-items-center justify-content-start w-100 vh-100 background text-center">
