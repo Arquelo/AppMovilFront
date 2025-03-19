@@ -10,7 +10,7 @@ import GroupCreate from "../views/manager/groups/create";
 import GroupEdit from "../views/manager/groups/edit";
 import GroupIndex from "../views/manager/groups/index";
 import NoteCreate from "../views/manager/notes/create";
-import NoteEdit from "../views/manager/notes/EditNote";
+import NoteEdit from "../views/manager/notes/edit";
 import NoteIndex from "../views/manager/notes/index";
 import PokemonIndex from "../views/manager/pokemons/index";
 

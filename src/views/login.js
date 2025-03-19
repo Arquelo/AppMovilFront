@@ -9,12 +9,26 @@ import { useNavigate } from "react-router-dom";
 const Login = () => {
   const { api, Swal } = useGlobal();
   const navigate = useNavigate();
-
-  console.log(useGlobal());
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const sendWelcomeNotification = () => {
+    if ("Notification" in window) {
+      Notification.requestPermission().then((permission) => {
+        if (permission === "granted" && !localStorage.getItem("welcomeNotificationSent")) {
+          new Notification("Bienvenido", {
+            body: "Has iniciado sesión correctamente",
+            icon: "/favicon.ico",
+            vibrate: [200, 100, 200],
+          });
+
+          // Marcar que la notificación ha sido enviada
+          localStorage.setItem("welcomeNotificationSent", "true");
+        }
+      });
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -30,9 +44,12 @@ const Login = () => {
           icon: "error",
           confirmButtonText: "OK",
         });
+        setLoading(false);
+        return;
       }
 
       navigate("/inicio");
+      sendWelcomeNotification(); // Enviar notificación después del login
       setEmail("");
       setPassword("");
 
@@ -43,6 +60,7 @@ const Login = () => {
         icon: "error",
         confirmButtonText: "OK",
       });
+      setLoading(false);
     }
   };
 
@@ -51,9 +69,10 @@ const Login = () => {
       const result = await signInWithPopup(auth, provider);
       const token = await result.user.getIdToken();
       const { data } = await api.post("/login-google", { token }, { withCredentials: true });
-      console.log(data); 
+
       localStorage.setItem("sessionId", data.session_id);
       navigate("/inicio");
+      sendWelcomeNotification(); // Enviar notificación después del login con Google
     } catch (error) {
       console.error("Error en la autenticación:", error);
     }

@@ -61,11 +61,13 @@ const Dashboard = () => {
             required
           />
         </div>
-        <ReturnMenuComponent />
-        <button type="submit" className="btn btn-primary ms-2" disabled={loading}>
+        <button type="submit" className="btn btn-primary" disabled={loading}>
           {loading ? "Guardando..." : "Guardar"}
         </button>
       </form>
+      <div className="mt-3">
+        <ReturnMenuComponent />
+      </div>
     </div>
   );
 };

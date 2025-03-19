@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-
+import { faTrash, faEdit } from "@fortawesome/free-solid-svg-icons";
 import { api, saveTableData, getTableData, useNavigate, DataTable, customStyles, paginationOptions, ReturnMenuComponent, FontAwesomeIcon } from "../../../global";
 
 const MyDataTable = () => {
@@ -60,9 +60,14 @@ const MyDataTable = () => {
         {
             name: "Acciones",
             cell: (row) => (
-                <button className="btn btn-danger btn-sm" onClick={() => handleDelete(row.id)}>
-                    Eliminar
-                </button>
+                <div className="d-flex">
+                    <button className="btn btn-primary btn-sm me-2" onClick={() => navigate(`/group/edit/${row.id}`)}>
+                        <FontAwesomeIcon icon={faEdit} />
+                    </button>
+                    <button className="btn btn-danger btn-sm" onClick={() => handleDelete(row.id)}>
+                        <FontAwesomeIcon icon={faTrash} />
+                    </button>
+                </div>
             ),
             ignoreRowClick: true,
             allowOverflow: true,
